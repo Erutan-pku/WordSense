@@ -32,7 +32,7 @@ def getBingScores(dataSet='All') :
     assert dataSet in ['All', 'set1', 'set2']
 
     getP = lambda x,y,b : float(x)/(y-b)
-    getScore = lambda cn1,all1,cn2,all2:getP(cn1,all1,0)+getP(cn2,all2,0)
+    getScore = lambda cn1,all1,cn2,all2:getP(cn1,all1,0)+getP(cn2,all2,0)#+random.random()/10000
 
     Data = pd.read_table('../data/WikiPageCount.tab', encoding='utf-8')
     """
@@ -43,8 +43,10 @@ def getBingScores(dataSet='All') :
     """
     #0.582384658573     0.634910303834      0.481524038101
     #scores = [getScore(Data['cnt1@2'][i],Data['len2'][i],Data['cnt2@1'][i],Data['len1'][i]) for i in range(len(Data))]
-    #0.582384658573     0.634910303834      0.481524038101
+    #0.582585242277     0.635005796577      0.481627165679
     scores = [getScore(Data['cnt1@2'][i],Data['blank2'][i],Data['cnt2@1'][i],Data['blank1'][i]) for i in range(len(Data))]
+    #0.566952126174     0.619619737847      0.469664741619
+    #scores = [getScore(Data['cnt1@2'][i],Data['cnt2@2'][i],Data['cnt2@1'][i],Data['cnt1@1'][i]) for i in range(len(Data))]
 
     if dataSet=='All' :
         return scores
@@ -56,7 +58,7 @@ def getBingScores(dataSet='All') :
 
 if __name__ == '__main__' :
     Data = getWordPairs()
-    getWikiCount(Data)
+    #getWikiCount(Data)
 
     setAll = getBingScores()
     print evalueSpearman(setAll)

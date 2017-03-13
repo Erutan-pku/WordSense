@@ -67,14 +67,21 @@ simFunction = lambda x,y : wn.res_similarity(x,y,semcor_ic)if x.pos()==y.pos() a
 #0.197001229283     0.243409325453      0.159964749119
 #simFunction = lambda x,y : wn.lin_similarity(x,y,genesis_ic)if x.pos()==y.pos() and not x.pos()in['a','s'] else 0
 
-def getWordNetSim(Data, simFunction) :
+def getWordNetSim(Data, simFunction=simFunction, dataSet='All') :
+    assert dataSet in ['All', 'set1', 'set2']
     scores = []
     for data in Data:
         synset1 = wn.synsets(data[0])
         synset2 = wn.synsets(data[1])
         maxScore = max([simFunction(x,y) for x in synset1 for y in synset2]+[0])
         scores.append(maxScore)
-    return scores
+    
+    if dataSet=='All' :
+        return scores
+    elif dataSet == 'set1' :
+        return scores[:153]
+    elif dataSet == 'set2' :
+        return scores[153:]
 
 def main(simFunction) :
     Data = getWordPairs()
