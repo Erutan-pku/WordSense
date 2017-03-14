@@ -41,7 +41,7 @@ def getGolveCos(Data, dataSet='All') :
     #scores = [-w2v.getEuclideanDis(x[0],x[1]) for x in Data]
 
     if dataSet=='All' :
-        return scores
+        return scores 
     elif dataSet == 'set1' :
         return scores[:153]
     elif dataSet == 'set2' :

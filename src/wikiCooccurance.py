@@ -28,7 +28,7 @@ def getWikiCount(Data) :
     outputFile.flush()
     outputFile.close()
 
-def getBingScores(dataSet='All') :
+def getWikiScores(dataSet='All') :
     assert dataSet in ['All', 'set1', 'set2']
 
     getP = lambda x,y,b : float(x)/(y-b)
@@ -60,7 +60,7 @@ if __name__ == '__main__' :
     Data = getWordPairs()
     #getWikiCount(Data)
 
-    setAll = getBingScores()
+    setAll = getWikiScores()
     print evalueSpearman(setAll)
     print evalueSpearman(setAll[:153], dataSet='set1')
     print evalueSpearman(setAll[153:], dataSet='set2')

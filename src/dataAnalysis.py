@@ -8,22 +8,27 @@ def getWordPairs(dataSet='All') :
     data2 = pd.read_table('../wordsim353/set2.tab', encoding='utf-8')
     data1_word1 = list(data1['Word 1'])
     data1_word2 = list(data1['Word 2'])
+    human_mean1 = list(data1['Human (mean)'])
     data2_word1 = list(data2['Word 1'])
     data2_word2 = list(data2['Word 2'])
+    human_mean2 = list(data2['Human (mean)'])
 
-    word1, word2 = [], []
+    word1, word2, human_mean = [], [], []
     if dataSet == 'All' :
         word1 = data1_word1+data2_word1
         word2 = data1_word2+data2_word2
+        human_mean = human_mean1+human_mean2
     elif dataSet == 'set1' :
         word1 = data1_word1
         word2 = data1_word2
+        human_mean = human_mean1
     elif dataSet == 'set2' :
         word1 = data2_word1
         word2 = data2_word2
+        human_mean = human_mean2
     assert len(word1) == len(word2)
 
-    return [[word1[i], word2[i]] for i in range(len(word1))]
+    return [[word1[i], word2[i], human_mean[i]] for i in range(len(word1))]
 
 def getRank(x) :
     dataPairs = sorted(zip(x, range(len(x))))
@@ -46,17 +51,21 @@ def countSpearman(x1, x2) :
     ps = 1-6*ps/length/(length**2-1)
     return ps
 
-def evalueSpearman(xs, dataSet='All') :
-    assert dataSet in ['All', 'set1', 'set2']
+def evalueSpearman(xs, dataSet='All', data=None) :
+    if not data is None :
+        dataSet = None
+    assert dataSet in ['All', 'set1', 'set2', None]
     data_mean1 = pd.read_table('../wordsim353/set1.tab', encoding='utf-8')['Human (mean)'].values
     data_mean2 = pd.read_table('../wordsim353/set2.tab', encoding='utf-8')['Human (mean)'].values
 
     if dataSet == 'All' :
-        return countSpearman(xs, list(data_mean1)+list(data_mean2))
+        data = list(data_mean1)+list(data_mean2)
     elif dataSet == 'set1' :
-        return countSpearman(xs, data_mean1)
+        data = data_mean1
     elif dataSet == 'set2' :
-        return countSpearman(xs, data_mean2)
+        data = data_mean2
+
+    return countSpearman(xs, data)    
 
 # Spearman correlation coefficient between labelers
 if __name__ == '__main__' :

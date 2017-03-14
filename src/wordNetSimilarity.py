@@ -4,6 +4,7 @@ import sys
 import nltk
 import random
 random.seed(1337)
+import numpy as np
 from nltk.corpus import wordnet as wn
 from nltk.corpus import wordnet_ic, genesis
 from dataAnalysis import getWordPairs, evalueSpearman
@@ -47,9 +48,9 @@ def topN(xs, n=3) :
 #0.332605157422     0.378351460201      0.237095177379
 #simFunction = lambda x,y : wn.res_similarity(x,y,brown_ic)if x.pos()==y.pos() and not x.pos()in['a','s'] else 0
 #0.333519003413     0.382270850924      0.237229430736
-simFunction = lambda x,y : wn.res_similarity(x,y,semcor_ic)if x.pos()==y.pos() and not x.pos()in['a','s'] else 0
+#simFunction = lambda x,y : wn.res_similarity(x,y,semcor_ic)if x.pos()==y.pos() and not x.pos()in['a','s'] else 0
 #0.327047195075     0.378426849209      0.226561164029
-#simFunction = lambda x,y : wn.res_similarity(x,y,genesis_ic)if x.pos()==y.pos() and not x.pos()in['a','s'] else 0
+simFunction = lambda x,y : wn.res_similarity(x,y,genesis_ic)if x.pos()==y.pos() and not x.pos()in['a','s'] else 0
  
 # 1/(IC(s1) + IC(s2) - 2 * IC(lcs))
 #0.283453351637     0.364845938375      0.158729843246
@@ -67,13 +68,14 @@ simFunction = lambda x,y : wn.res_similarity(x,y,semcor_ic)if x.pos()==y.pos() a
 #0.197001229283     0.243409325453      0.159964749119
 #simFunction = lambda x,y : wn.lin_similarity(x,y,genesis_ic)if x.pos()==y.pos() and not x.pos()in['a','s'] else 0
 
-def getWordNetSim(Data, simFunction=simFunction, dataSet='All') :
+def getWordNetSim(Data, simFunction=simFunction, dataSet='All', covert=average) :
     assert dataSet in ['All', 'set1', 'set2']
     scores = []
     for data in Data:
         synset1 = wn.synsets(data[0])
         synset2 = wn.synsets(data[1])
-        maxScore = max([simFunction(x,y) for x in synset1 for y in synset2]+[0])
+        maxScore = covert([simFunction(x,y) for x in synset1 for y in synset2]+[0])
+        maxScore = min(maxScore, 5.2)
         scores.append(maxScore)
     
     if dataSet=='All' :
@@ -97,7 +99,12 @@ if __name__ == '__main__':
     wn_Infor = [wn.rl_similarity, wn.jcn_similarity, wn.lin_similarity]
     ic_Infor = [brown_ic, semcor_ic, genesis_ic]
     [main(lambda x,y:t1(x,y,t2)if x.pos()==y.pos()and not x.pos()in['a','s']else 0)for t1 in wn_Infor for t2 in ic_Infor]
-main(simFunction)
+#main(simFunction)
+
+
+# supervised used:
+wup_max = lambda data : getWordNetSim(data, simFunction=wn.wup_similarity, covert=max)
+res_ave_genesis = lambda data : getWordNetSim(data, simFunction=lambda x,y : wn.res_similarity(x,y,genesis_ic)if x.pos()==y.pos() and not x.pos()in['a','s'] else 0, covert=average)
 """
 max :
 0.292690        0.311689        0.242355
