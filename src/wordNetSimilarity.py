@@ -50,7 +50,7 @@ def topN(xs, n=3) :
 simFunction = lambda x,y : wn.res_similarity(x,y,semcor_ic)if x.pos()==y.pos() and not x.pos()in['a','s'] else 0
 #0.327047195075     0.378426849209      0.226561164029
 #simFunction = lambda x,y : wn.res_similarity(x,y,genesis_ic)if x.pos()==y.pos() and not x.pos()in['a','s'] else 0
-
+ 
 # 1/(IC(s1) + IC(s2) - 2 * IC(lcs))
 #0.283453351637     0.364845938375      0.158729843246
 #simFunction = lambda x,y : wn.jcn_similarity(x,y,brown_ic)if x.pos()==y.pos() and not x.pos()in['a','s'] else 0
@@ -91,12 +91,12 @@ def main(simFunction) :
 
 if __name__ == '__main__':
     main(wn.path_similarity)
-    main(lambda x,y : wn.lch_similarity(x, y) if x.pos()==y.pos() else random.random()/100)
+    main(lambda x,y : wn.lch_similarity(x, y) if x.pos()==y.pos() else 0)
     main(wn.wup_similarity)
 
-    wn_Infor = [wn.res_similarity, wn.jcn_similarity, wn.lin_similarity]
+    wn_Infor = [wn.rl_similarity, wn.jcn_similarity, wn.lin_similarity]
     ic_Infor = [brown_ic, semcor_ic, genesis_ic]
-    [main(lambda x,y:t1(x,y,t2)if x.pos()==y.pos()and not x.pos()in['a','s']else random.random()/100)for t1 in wn_Infor for t2 in ic_Infor]
+    [main(lambda x,y:t1(x,y,t2)if x.pos()==y.pos()and not x.pos()in['a','s']else 0)for t1 in wn_Infor for t2 in ic_Infor]
 main(simFunction)
 """
 max :
@@ -104,12 +104,12 @@ max :
 0.303463        0.333651        0.243128
 0.331198        0.358988        0.258939
 0.332605        0.378351        0.237095
-0.333519        0.382271        0.237229
+0.333519        0.382271        0.237229    semcor_ic
 0.327047        0.378427        0.226561
-0.283453        0.364846        0.158730
+0.283453        0.364846        0.158730    brown_ic
 0.177337        0.272079        0.057088
 0.131892        0.215981        0.079751
-0.299336        0.360000        0.197708
+0.299336        0.360000        0.197708    brown_ic
 0.216159        0.273284        0.129544
 0.197001        0.243409        0.159965
 
@@ -119,11 +119,11 @@ average:
 0.296517        0.307310        0.243068
 0.361846        0.385245        0.293645
 0.361034        0.399594        0.275554
-0.373279        0.417581        0.284367     ***
-0.292642        0.443521        0.121428
+0.373279        0.417581        0.284367     ***. genesis_ic
+0.292642        0.443521        0.121428    brown_ic
 0.176178        0.329483        0.003367
 0.105656        0.202480        0.036422
-0.328972        0.367325        0.253186
+0.328972        0.367325        0.253186    brown_ic
 0.224770        0.261762        0.153170
 0.201050        0.262023        0.161262
 

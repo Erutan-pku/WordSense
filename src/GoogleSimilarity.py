@@ -43,12 +43,14 @@ def getBingScores(dataSet='All') :
     #getScore = lambda cn1,cn2,cn12 :float(cn12)/min(cn1,cn2) if not cn1*cn2*cn12==0 else 0
     #0.457344214459      0.457726032997      0.445134253356
     #getScore = lambda cn1,cn2,cn12 :2*float(cn12)/(cn1+cn2)
+    #0.0.486824426444   0.508372368086    0.46434560864
+    getScore = lambda cn1,cn2,cn12 :math.log(float(cn12*100000000.0)/cn1/cn2)if not cn1*cn2*cn12==0 else 0
     #0.510050532635     0.538611736561      0.470365259131
-    getScore = lambda cn1,cn2,cn12 :-(math.log(max(cn1,cn2))-math.log(cn12))/(math.log(100000000.0)-math.log(min(cn1,cn2))) if not cn1*cn2*cn12==0 else 0
+    #getScore = lambda cn1,cn2,cn12 :-(math.log(max(cn1,cn2))-math.log(cn12))/(math.log(100000000.0)-math.log(min(cn1,cn2))) if not cn1*cn2*cn12==0 else 0
     scores = [getScore(Data['cnt1'][i],Data['cnt2'][i],Data['cnt12'][i]) for i in range(len(Data))]
     score_ave = sum(scores) / len(scores)
     random.seed(1223)
-    scores = [x if not x == 0 else score_ave+random.random()/10000 for x in scores]
+    scores = [x if not x == 0 else score_ave for x in scores]
     if dataSet=='All' :
         return scores
     elif dataSet == 'set1' :
